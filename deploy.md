@@ -394,6 +394,67 @@ nacos.istio.mcp.server.enabled=false
 ### Distro data load retry delay when load snapshot data failed, default 30 seconds.
 # nacos.core.protocol.distro.data.load.retryDelayMs=30000
 ```
+进入nacos，切换左上角prod环境，分别编辑每个yml文件，修改mysql和redis配置。
+
+![enter image description here](https://pub-99db9f0bcf6e4cab8bba2129c51a96c7.r2.dev/nacos.png)
+
+注意：host: redis-sohk.project-test，以及url: jdbc:mysql://mysql-hlpc.project-test:3306/ry-cloud
+```
+# spring配置
+spring:
+  redis:
+    host: redis-sohk.project-test
+    port: 6379
+    password:
+  datasource:
+    druid:
+      stat-view-servlet:
+        enabled: true
+        loginUsername: admin
+        loginPassword: 123456
+    dynamic:
+      druid:
+        initial-size: 5
+        min-idle: 5
+        maxActive: 20
+        maxWait: 60000
+        timeBetweenEvictionRunsMillis: 60000
+        minEvictableIdleTimeMillis: 300000
+        validationQuery: SELECT 1 FROM DUAL
+        testWhileIdle: true
+        testOnBorrow: false
+        testOnReturn: false
+        poolPreparedStatements: true
+        maxPoolPreparedStatementPerConnectionSize: 20
+        filters: stat,slf4j
+        connectionProperties: druid.stat.mergeSql\=true;druid.stat.slowSqlMillis\=5000
+      datasource:
+          # 主库数据源
+          master:
+            driver-class-name: com.mysql.cj.jdbc.Driver
+            url: jdbc:mysql://mysql-hlpc.project-test:3306/ry-cloud?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+            username: root
+            password: 123456
+          # 从库数据源
+          # slave:
+            # username: 
+            # password: 
+            # url: 
+            # driver-class-name: 
+
+# mybatis配置
+mybatis:
+    # 搜索指定包别名
+    typeAliasesPackage: com.ruoyi.system
+    # 配置mapper的扫描，找到所有的mapper.xml映射文件
+    mapperLocations: classpath:mapper/**/*.xml
+
+# swagger配置
+swagger:
+  title: 系统模块接口文档
+  license: Powered By ruoyi
+  licenseUrl: https://ruoyi.vip
+```
 
 ## 部署Higress
 #### 在标准 K8s 集群中使用
