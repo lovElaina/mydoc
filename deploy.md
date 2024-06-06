@@ -154,6 +154,12 @@ MODE standalone
 
 配置文件
 
+**注意，一定要调整db.url.0=jdbc:mysql://mysql.ruoyi:3306，这里换成自己的服务.项目**
+
+**例如：db.url.0=jdbc:mysql://mysql-hlpc.project-test:3306**
+
+**另外，注意修改数据库用户名和密码**
+
 ```Bash
 #
 # Copyright 1999-2021 Alibaba Group Holding Ltd.
@@ -399,7 +405,7 @@ helm repo add higress.io https://higress.io/helm-charts
 helm install higress -n higress-system higress.io/higress --create-namespace --render-subchart-notes
 ```
 
-**中国大陆用户可以使用以下方法加速安装：**
+**如果安装较慢，可以使用以下方法加速安装：**
 
 ```
 helm repo add higress.cn https://higress.cn/helm-charts
