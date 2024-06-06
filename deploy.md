@@ -32,6 +32,7 @@ docker run -p 3306:3306 --name some-mysql \
 ```
 
 在K8S里使用configMap的形式，将配置文件挂载出来。
+
 ![enter image description here](https://pub-99db9f0bcf6e4cab8bba2129c51a96c7.r2.dev/k8s-mysql.png)
 
 只要在 /etc/mysql/conf.d 下面所有以 .cnf 的结尾的文件，都会被Mysql当做是配置文件。
