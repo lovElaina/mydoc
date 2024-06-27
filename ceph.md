@@ -1,5 +1,5 @@
-﻿环境准备
- 
+环境准备
+
 虚拟机数量：三台
 
 虚拟机型号：标准型S5（腾讯云）
@@ -20,6 +20,10 @@ vda 20G(系统盘） vdb 40G(数据盘）
 软件包准备，计算\存储节点执行
 安装软件包，加载rbd模块
 
+在此之前，需要清除master节点上的污点。
+
+**kubectl taint nodes master node-role.kubernetes.io/master-**
+
 下载rook-ceph文件
 下载文件并提取核心文件到自己的部署文件夹
 
@@ -31,25 +35,25 @@ vda 20G(系统盘） vdb 40G(数据盘）
 
 提取部署文件
 
-**mkdir -p /data/rook-ceph/**
+mkdir -p /data/rook-ceph/
 
-**cp /data/rook/deploy/examples/crds.yaml /data/rook-ceph/crds.yaml**
+cp /data/rook/deploy/examples/crds.yaml /data/rook-ceph/crds.yaml
 
-**cp /data/rook/deploy/examples/common.yaml /data/rook-ceph/common.yaml**
+cp /data/rook/deploy/examples/common.yaml /data/rook-ceph/common.yaml
 
-**cp /data/rook/deploy/examples/operator.yaml /data/rook-ceph/operator.yaml**
+cp /data/rook/deploy/examples/operator.yaml /data/rook-ceph/operator.yaml
 
-**cp /data/rook/deploy/examples/cluster.yaml /data/rook-ceph/cluster.yaml**
+cp /data/rook/deploy/examples/cluster.yaml /data/rook-ceph/cluster.yaml
 
-**cp /data/rook/deploy/examples/filesystem.yaml /data/rook-ceph/filesystem.yaml**
+cp /data/rook/deploy/examples/filesystem.yaml /data/rook-ceph/filesystem.yaml
 
-**cp /data/rook/deploy/examples/toolbox.yaml /data/rook-ceph/toolbox.yaml**
+cp /data/rook/deploy/examples/toolbox.yaml /data/rook-ceph/toolbox.yaml
 
-**cp /data/rook/deploy/examples/csi/rbd/storageclass.yaml /data/rook-ceph/storageclass-rbd.yaml**
+cp /data/rook/deploy/examples/csi/rbd/storageclass.yaml /data/rook-ceph/storageclass-rbd.yaml
 
-**cp /data/rook/deploy/examples/csi/cephfs/storageclass.yaml /data/rook-ceph/storageclass-cephfs.yaml**
+cp /data/rook/deploy/examples/csi/cephfs/storageclass.yaml /data/rook-ceph/storageclass-cephfs.yaml
 
-**cp /data/rook/deploy/examples/csi/nfs/storageclass.yaml /data/rook-ceph/storageclass-nfs.yaml**
+cp /data/rook/deploy/examples/csi/nfs/storageclass.yaml /data/rook-ceph/storageclass-nfs.yaml
 
 **cd /data/rook-ceph**
 
@@ -91,7 +95,9 @@ vda 20G(系统盘） vdb 40G(数据盘）
 
 修改cluster.yaml：
 
-**databaseSizeMB: "1024"** # uncomment if the disks are smaller than 100 GB，取消注释。
+![image-20240625145758710](https://aemon-1309182592.cos.ap-hongkong.myqcloud.com/image-20240625145758710.png)
+
+**databaseSizeMB: "1024"** # uncomment if the disks are smaller than 100 GB，如果数据盘小于100GB，取消注释。
 
 执行部署cluster-test.yaml：
 
@@ -100,7 +106,7 @@ vda 20G(系统盘） vdb 40G(数据盘）
 等待一段时间
 
 查看部署结果，当全部为Running之后部署工具容器进行集群确认
-** kubectl -n rook-ceph get pod**
+**kubectl -n rook-ceph get pod**
 
     NAME                                               READY   STATUS      RESTARTS   AGE
     csi-cephfsplugin-5v55s                             2/2     Running     0          6h23m
@@ -158,6 +164,10 @@ vda 20G(系统盘） vdb 40G(数据盘）
       io:
         client:   4.0 KiB/s wr, 0 op/s rd, 0 op/s wr
 
+![image-20240625113757026](https://aemon-1309182592.cos.ap-hongkong.myqcloud.com/image-20240625113757026.png)
+
+如上图，是三个120GB数据盘节点，安装ceph成功后的结果。
+
 或进入工具容器内执行命令查看集群状态
 
 **kubectl -n rook-ceph exec -it deploy/rook-ceph-tools -- bash**
@@ -204,6 +214,10 @@ vda 20G(系统盘） vdb 40G(数据盘）
 创建cephrbd存储类
 
 **kubectl apply -f  storageclass-rbd.yaml**
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 创建pvc.xml
 
@@ -258,5 +272,3 @@ vda 20G(系统盘） vdb 40G(数据盘）
      0  master  49.9M  39.9G      0        0       0        0   exists,up  
      1  node1   49.9M  39.9G      0     5734       0        0   exists,up  
      2  node2   49.9M  39.9G      0        0       0        0   exists,up
-
-
